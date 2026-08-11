@@ -98,6 +98,8 @@ public class AdminController {
 
             while ((line = reader.readNext()) != null) {
                 row++;
+                if (line.length == 0 || (line.length == 1 && line[0].isBlank())) continue;
+
                 try {
                     Profile profile = new Profile();
                     profile.setId(UUID.randomUUID().toString());
@@ -105,26 +107,26 @@ public class AdminController {
 
                     if (role.equalsIgnoreCase("student")) {
                         // Expected: name,email,phone,matric_no,department,faculty,level,password
-                        profile.setName(line[0].trim());
-                        profile.setEmail(line[1].trim());
-                        profile.setPhone(line[2].trim());
-                        profile.setMatricNo(line[3].trim());
-                        profile.setDepartment(line[4].trim());
-                        profile.setFaculty(line[5].trim());
-                        profile.setLevel(line[6].trim());
-                        profile.setPassword(passwordEncoder.encode(
-                                line.length > 7 ? line[7].trim() : "password123"));
+                        profile.setName(getCol(line, 0, "Student " + row));
+                        profile.setEmail(getCol(line, 1, "student" + row + "@futa.edu.ng"));
+                        profile.setPhone(getCol(line, 2, ""));
+                        profile.setMatricNo(getCol(line, 3, "MAT/" + row));
+                        profile.setDepartment(getCol(line, 4, "General"));
+                        profile.setFaculty(getCol(line, 5, "General"));
+                        profile.setLevel(getCol(line, 6, "100 Level"));
+                        String rawPass = getCol(line, 7, "password123");
+                        profile.setPassword(passwordEncoder.encode(rawPass.isEmpty() ? "password123" : rawPass));
                     } else {
                         // Expected: name,title,email,phone,staff_id,department,faculty,password
-                        profile.setName(line[0].trim());
-                        profile.setTitle(line[1].trim());
-                        profile.setEmail(line[2].trim());
-                        profile.setPhone(line[3].trim());
-                        profile.setStaffId(line[4].trim());
-                        profile.setDepartment(line[5].trim());
-                        profile.setFaculty(line[6].trim());
-                        profile.setPassword(passwordEncoder.encode(
-                                line.length > 7 ? line[7].trim() : "password123"));
+                        profile.setName(getCol(line, 0, "Staff " + row));
+                        profile.setTitle(getCol(line, 1, "Lecturer"));
+                        profile.setEmail(getCol(line, 2, "staff" + row + "@futa.edu.ng"));
+                        profile.setPhone(getCol(line, 3, ""));
+                        profile.setStaffId(getCol(line, 4, "STF/" + row));
+                        profile.setDepartment(getCol(line, 5, "General"));
+                        profile.setFaculty(getCol(line, 6, "General"));
+                        String rawPass = getCol(line, 7, "password123");
+                        profile.setPassword(passwordEncoder.encode(rawPass.isEmpty() ? "password123" : rawPass));
                     }
 
                     imported.add(profileRepository.save(profile));
@@ -141,5 +143,12 @@ public class AdminController {
                 "imported", imported.size(),
                 "errors", errors
         ));
+    }
+
+    private String getCol(String[] line, int idx, String defaultVal) {
+        if (line != null && idx >= 0 && idx < line.length && line[idx] != null && !line[idx].isBlank()) {
+            return line[idx].trim();
+        }
+        return defaultVal;
     }
 }

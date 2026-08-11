@@ -26,12 +26,12 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
-        String credential = body.get("credential");
-        String password   = body.get("password");
-        String role       = body.get("role");
+        String credential = body.get("credential") != null ? body.get("credential").trim() : "";
+        String password   = body.get("password") != null ? body.get("password").trim() : "";
+        String role       = body.get("role") != null ? body.get("role").trim() : "";
 
-        if (credential == null || password == null || role == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "credential, password and role are required"));
+        if (credential.isEmpty() || password.isEmpty() || role.isEmpty()) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Credential, password, and role are required."));
         }
 
         // Look up profile by matric_no (student), staff_id (staff), or email/staff_id (admin)

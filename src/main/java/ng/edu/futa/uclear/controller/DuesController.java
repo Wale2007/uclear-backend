@@ -54,10 +54,17 @@ public class DuesController {
      * POST /api/dues  — Admin only (handled by SecurityConfig)
      */
     @PostMapping
-    public ResponseEntity<Due> createDue(@RequestBody Due due) {
+    public ResponseEntity<?> createDue(@RequestBody Due due) {
+        if (due.getName() == null || due.getName().isBlank()) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Levy name is required."));
+        }
+        if (due.getAmount() == null || due.getAmount().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Amount must be a positive number."));
+        }
         if (due.getId() == null || due.getId().isBlank()) {
             due.setId(java.util.UUID.randomUUID().toString());
         }
+        if (due.getIsActive() == null) due.setIsActive(true);
         return ResponseEntity.ok(dueRepository.save(due));
     }
 
@@ -65,9 +72,16 @@ public class DuesController {
      * PUT /api/dues/{id}  — Admin only
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Due> updateDue(@PathVariable String id, @RequestBody Due updated) {
+    public ResponseEntity<?> updateDue(@PathVariable String id, @RequestBody Due updated) {
+        if (updated.getName() == null || updated.getName().isBlank()) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Levy name is required."));
+        }
+        if (updated.getAmount() == null || updated.getAmount().compareTo(java.math.BigDecimal.ZERO) <= 0) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", "Amount must be a positive number."));
+        }
+
         return dueRepository.findById(id).map(due -> {
-            due.setName(updated.getName());
+            due.setName(updated.getName().trim());
             due.setAmount(updated.getAmount());
             due.setCategory(updated.getCategory());
             due.setDescription(updated.getDescription());

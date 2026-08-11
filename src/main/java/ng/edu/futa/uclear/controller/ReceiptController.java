@@ -92,8 +92,17 @@ public class ReceiptController {
         receipt.setDue(due);
         receipt.setDuesName((String) body.get("duesName"));
         receipt.setCategory((String) body.get("category"));
-        receipt.setAmount(new BigDecimal(body.get("amount").toString()));
-        receipt.setPaymentMethod((String) body.get("paymentMethod"));
+        Object amtObj = body.get("amount");
+        BigDecimal amount = BigDecimal.ZERO;
+        if (amtObj != null) {
+            try {
+                amount = new BigDecimal(amtObj.toString());
+            } catch (Exception e) {
+                return ResponseEntity.badRequest().body(Map.of("error", "Invalid amount format."));
+            }
+        }
+        receipt.setAmount(amount);
+        receipt.setPaymentMethod(body.get("paymentMethod") != null ? body.get("paymentMethod").toString() : "CARD");
         receipt.setStatus(Receipt.Status.successful);
         receipt.setVerified(false);
 
