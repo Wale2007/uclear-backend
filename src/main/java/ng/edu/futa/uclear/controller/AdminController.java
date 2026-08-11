@@ -1,6 +1,7 @@
 package ng.edu.futa.uclear.controller;
 
 import lombok.RequiredArgsConstructor;
+import ng.edu.futa.uclear.config.DatabaseSeeder;
 import ng.edu.futa.uclear.model.Due;
 import ng.edu.futa.uclear.model.Profile;
 import ng.edu.futa.uclear.model.Receipt;
@@ -26,6 +27,7 @@ public class AdminController {
     private final DueRepository dueRepository;
     private final ReceiptRepository receiptRepository;
     private final PasswordEncoder passwordEncoder;
+    private final DatabaseSeeder databaseSeeder;
 
     /**
      * GET /api/admin/stats
@@ -33,6 +35,7 @@ public class AdminController {
      */
     @GetMapping("/stats")
     public ResponseEntity<?> getStats() {
+        databaseSeeder.seedAllIfMissing();
         long totalStudents = profileRepository.findAll().stream()
                 .filter(p -> p.getRole() == Profile.Role.student).count();
         long totalStaff = profileRepository.findAll().stream()
@@ -55,6 +58,7 @@ public class AdminController {
      */
     @GetMapping("/profiles")
     public ResponseEntity<List<Profile>> getAllProfiles() {
+        databaseSeeder.seedAllIfMissing();
         return ResponseEntity.ok(profileRepository.findAll());
     }
 

@@ -29,21 +29,37 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        seedAllIfMissing();
+    }
+
+    public void seedAllIfMissing() {
         String hashedPassword = passwordEncoder.encode("password123");
 
-        if (profileRepository.count() == 0) {
-            System.out.println("[Uclear] Seeding MySQL database...");
+        long studentCount = profileRepository.findAll().stream().filter(p -> p.getRole() == Profile.Role.student).count();
+        long staffCount   = profileRepository.findAll().stream().filter(p -> p.getRole() == Profile.Role.staff).count();
+        long duesCount    = dueRepository.count();
+
+        if (studentCount == 0) {
+            System.out.println("[Uclear] Seeding student accounts into MySQL...");
             seedStudents(hashedPassword);
+        }
+
+        if (staffCount == 0) {
+            System.out.println("[Uclear] Seeding staff accounts into MySQL...");
             seedStaff(hashedPassword);
-            seedAdmins(hashedPassword);
-            seedDues();
-            System.out.println("[Uclear] Initial database seeding complete!");
-        } else if (!profileRepository.existsByEmail("sug.admin@futa.edu.ng")) {
+        }
+
+        if (!profileRepository.existsByEmail("sug.admin@futa.edu.ng")) {
             System.out.println("[Uclear] Seeding admin accounts into MySQL...");
             seedAdmins(hashedPassword);
-        } else {
-            System.out.println("[Uclear] Database already fully seeded.");
         }
+
+        if (duesCount == 0) {
+            System.out.println("[Uclear] Seeding dues catalog into MySQL...");
+            seedDues();
+        }
+
+        System.out.println("[Uclear] MySQL database seeding check complete!");
     }
 
     private void seedStudents(String hashedPassword) {
