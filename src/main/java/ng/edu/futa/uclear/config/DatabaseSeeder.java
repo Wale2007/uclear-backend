@@ -132,16 +132,16 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private void seedDues() {
         List<Due> dues = List.of(
-            due("dues-std-001", "Student Union Government (SUG) Dues", 2000, "Student Union", "Annual SUG developmental levy covering all student activities.", LocalDate.of(2026, 7, 31), Due.RoleTarget.student),
-            due("dues-std-002", "Faculty Developmental Levy", 3500, "Faculty", "Faculty-level operational fees and seminar series.", LocalDate.of(2026, 7, 15), Due.RoleTarget.student),
+            due("dues-std-001", "Student Union Government (SUG) Dues", 2000, "Student Union", "Annual SUG developmental levy covering all student activities.", LocalDate.of(2026, 8, 31), Due.RoleTarget.student),
+            due("dues-std-002", "Faculty Developmental Levy", 3500, "Faculty", "Faculty-level operational fees and seminar series.", LocalDate.of(2026, 9, 15), Due.RoleTarget.student),
             due("dues-std-003", "Departmental Dues", 5000, "Departmental", "Laboratory maintenance and final year project seed fund.", LocalDate.of(2026, 6, 25), Due.RoleTarget.student),
-            due("dues-std-004", "Library Clearance & E-Resource Fee", 1500, "Other", "Library clearance and digital resources access fee.", LocalDate.of(2026, 8, 15), Due.RoleTarget.student),
-            due("dues-std-005", "Sports & Recreation Levy", 1000, "Other", "Annual sports complex access and inter-faculty games levy.", LocalDate.of(2026, 8, 31), Due.RoleTarget.student),
-            due("dues-std-006", "Medical / Health Insurance Levy", 2500, "Health", "Student Health Centre operational levy and insurance cover.", LocalDate.of(2026, 7, 31), Due.RoleTarget.student),
-            due("dues-stf-001", "ASUU Union Monthly Dues", 2000, "Union", "Monthly Academic Staff Union of Universities (ASUU) dues.", LocalDate.of(2026, 7, 31), Due.RoleTarget.staff),
-            due("dues-stf-002", "Staff Welfare & Cooperative Fund", 5000, "Welfare", "Annual staff cooperative fund and welfare contributions.", LocalDate.of(2026, 7, 15), Due.RoleTarget.staff),
+            due("dues-std-004", "Library Clearance & E-Resource Fee", 1500, "Other", "Library clearance and digital resources access fee.", LocalDate.of(2026, 9, 30), Due.RoleTarget.student),
+            due("dues-std-005", "Sports & Recreation Levy", 1000, "Other", "Annual sports complex access and inter-faculty games levy.", LocalDate.of(2026, 10, 15), Due.RoleTarget.student),
+            due("dues-std-006", "Medical / Health Insurance Levy", 2500, "Health", "Student Health Centre operational levy and insurance cover.", LocalDate.of(2026, 7, 1), Due.RoleTarget.student),
+            due("dues-stf-001", "ASUU Union Monthly Dues", 2000, "Union", "Monthly Academic Staff Union of Universities (ASUU) dues.", LocalDate.of(2026, 8, 31), Due.RoleTarget.staff),
+            due("dues-stf-002", "Staff Welfare & Cooperative Fund", 5000, "Welfare", "Annual staff cooperative fund and welfare contributions.", LocalDate.of(2026, 9, 15), Due.RoleTarget.staff),
             due("dues-stf-003", "Staff Club Annual Membership", 10000, "Club", "Annual membership fee for the FUTA staff club.", LocalDate.of(2026, 6, 30), Due.RoleTarget.staff),
-            due("dues-stf-004", "NASU Non-Academic Staff Levy", 1500, "Union", "Non-Academic Staff Union monthly levy.", LocalDate.of(2026, 7, 31), Due.RoleTarget.staff)
+            due("dues-stf-004", "NASU Non-Academic Staff Levy", 1500, "Union", "Non-Academic Staff Union monthly levy.", LocalDate.of(2026, 10, 1), Due.RoleTarget.staff)
         );
 
         dues.forEach(dueRepository::save);
