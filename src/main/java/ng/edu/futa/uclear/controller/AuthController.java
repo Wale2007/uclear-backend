@@ -1,6 +1,8 @@
 package ng.edu.futa.uclear.controller;
 
 import lombok.RequiredArgsConstructor;
+import ng.edu.futa.uclear.dto.AuthResponse;
+import ng.edu.futa.uclear.dto.LoginRequest;
 import ng.edu.futa.uclear.model.Profile;
 import ng.edu.futa.uclear.repository.ProfileRepository;
 import ng.edu.futa.uclear.security.JwtUtil;
@@ -22,13 +24,13 @@ public class AuthController {
 
     /**
      * POST /api/auth/login
-     * Body: { "credential": "SEN/22/9292", "password": "password123", "role": "student" }
+     * Uses type-safe LoginRequest and returns type-safe AuthResponse
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
-        String credential = body.get("credential") != null ? body.get("credential").trim() : "";
-        String password   = body.get("password") != null ? body.get("password").trim() : "";
-        String role       = body.get("role") != null ? body.get("role").trim() : "";
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        String credential = request.credential() != null ? request.credential().trim() : "";
+        String password   = request.password() != null ? request.password().trim() : "";
+        String role       = request.role() != null ? request.role().trim() : "";
 
         if (credential.isEmpty() || password.isEmpty() || role.isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("error", "Credential, password, and role are required."));
@@ -64,19 +66,21 @@ public class AuthController {
         // Generate JWT token
         String token = jwtUtil.generateToken(profile);
 
-        Map<String, Object> response = new java.util.HashMap<>();
-        response.put("token", token);
-        response.put("role", profile.getRole().name());
-        response.put("id", profile.getId());
-        response.put("name", profile.getName());
-        response.put("email", profile.getEmail());
-        response.put("phone", profile.getPhone() != null ? profile.getPhone() : "");
-        response.put("department", profile.getDepartment() != null ? profile.getDepartment() : "");
-        response.put("faculty", profile.getFaculty() != null ? profile.getFaculty() : "");
-        response.put("level", profile.getLevel() != null ? profile.getLevel() : "");
-        response.put("matricNo", profile.getMatricNo() != null ? profile.getMatricNo() : "");
-        response.put("staffId", profile.getStaffId() != null ? profile.getStaffId() : "");
-        response.put("title", profile.getTitle() != null ? profile.getTitle() : "");
+        // Type-safe DTO response (no strings, compile-time verified)
+        AuthResponse response = new AuthResponse(
+            token,
+            profile.getRole().name(),
+            profile.getId(),
+            profile.getName(),
+            profile.getEmail(),
+            profile.getPhone() != null ? profile.getPhone() : "",
+            profile.getDepartment() != null ? profile.getDepartment() : "",
+            profile.getFaculty() != null ? profile.getFaculty() : "",
+            profile.getLevel() != null ? profile.getLevel() : "",
+            profile.getMatricNo() != null ? profile.getMatricNo() : "",
+            profile.getStaffId() != null ? profile.getStaffId() : "",
+            profile.getTitle() != null ? profile.getTitle() : ""
+        );
 
         return ResponseEntity.ok(response);
     }
