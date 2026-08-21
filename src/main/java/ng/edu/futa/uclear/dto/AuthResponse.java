@@ -7,7 +7,7 @@ package ng.edu.futa.uclear.dto;
 public record AuthResponse(
     String token,
     String role,
-    Long id,
+    String id,
     String name,
     String email,
     String phone,
