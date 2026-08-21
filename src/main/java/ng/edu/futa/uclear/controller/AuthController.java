@@ -46,14 +46,19 @@ public class AuthController {
         }
 
         if (profileOpt.isEmpty()) {
-            return ResponseEntity.status(401).body(Map.of("error", "Account profile not found. Please check your credentials."));
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials. Please verify your details and try again."));
         }
 
         Profile profile = profileOpt.get();
 
+        // Strict role validation — prevent students or staff from accessing admin role and vice-versa
+        if (!profile.getRole().name().equalsIgnoreCase(role)) {
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials. Please verify your details and try again."));
+        }
+
         // Verify password (BCrypt)
         if (!passwordEncoder.matches(password, profile.getPassword())) {
-            return ResponseEntity.status(401).body(Map.of("error", "Incorrect password."));
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials. Please verify your details and try again."));
         }
 
         // Generate JWT token
