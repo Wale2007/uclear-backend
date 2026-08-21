@@ -46,7 +46,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints — no token needed
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/dues").permitAll()
+                .requestMatchers("/api/dues", "/api/dues/**").permitAll()
                 .requestMatchers("/api/receipts/public/**").permitAll()
                 .requestMatchers("/api/webhooks/**").permitAll()
                 // Admin only
